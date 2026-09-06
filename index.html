@@ -13,31 +13,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        /* ===== ESTILOS (mesmo do código anterior, mantido) ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             background: #0a0a0a;
             color: #ffffff;
             min-height: 100vh;
         }
-        
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #ff0000, #cc0000);
-            border-radius: 10px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #ff0000, #cc0000); border-radius: 10px; }
 
-        /* === HEADER === */
         .header {
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(20px);
@@ -51,7 +38,6 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             flex-wrap: wrap;
         }
-        
         .logo {
             font-weight: 900;
             font-size: 24px;
@@ -63,23 +49,14 @@
             white-space: nowrap;
             letter-spacing: -0.5px;
         }
-        .logo span {
-            color: #fff;
-            font-weight: 700;
-        }
-        .logo small {
-            font-size: 11px;
-            color: #666;
-            font-weight: 400;
-            letter-spacing: 0px;
-        }
+        .logo span { color: #fff; font-weight: 700; }
+        .logo small { font-size: 11px; color: #666; font-weight: 400; }
         .logo .play-icon {
-            display: inline-block;
+            display: inline-flex;
             background: #ff0000;
             width: 32px;
             height: 32px;
             border-radius: 8px;
-            display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
@@ -111,9 +88,7 @@
             outline: none;
             font-family: 'Inter', sans-serif;
         }
-        .search-box input::placeholder {
-            color: #666;
-        }
+        .search-box input::placeholder { color: #666; }
         .search-box button {
             padding: 12px 22px;
             background: transparent;
@@ -123,10 +98,7 @@
             font-size: 18px;
             transition: all 0.3s;
         }
-        .search-box button:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.05);
-        }
+        .search-box button:hover { color: #fff; background: rgba(255,255,255,0.05); }
 
         .header-actions {
             display: flex;
@@ -161,14 +133,12 @@
             transform: translateY(-2px);
         }
 
-        /* === CONTAINER === */
         .container {
             display: flex;
             max-width: 1440px;
             margin: 0 auto;
         }
 
-        /* === SIDEBAR === */
         .sidebar {
             width: 240px;
             padding: 16px 12px;
@@ -179,9 +149,7 @@
             flex-shrink: 0;
             border-right: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .sidebar-section {
-            margin-bottom: 24px;
-        }
+        .sidebar-section { margin-bottom: 24px; }
         .sidebar-section .title {
             font-size: 11px;
             text-transform: uppercase;
@@ -201,7 +169,6 @@
             gap: 14px;
             transition: all 0.2s ease;
             font-weight: 500;
-            position: relative;
         }
         .sidebar-item:hover {
             background: #1a1a1a;
@@ -209,14 +176,10 @@
             transform: translateX(4px);
         }
         .sidebar-item.active {
-            background: linear-gradient(135deg, rgba(255, 0, 0, 0.15), rgba(204, 0, 0, 0.05));
+            background: linear-gradient(135deg, rgba(255,0,0,0.15), rgba(204,0,0,0.05));
             color: #ff0000;
         }
-        .sidebar-item .icon {
-            font-size: 20px;
-            width: 28px;
-            text-align: center;
-        }
+        .sidebar-item .icon { font-size: 20px; width: 28px; text-align: center; }
         .sidebar-item .badge {
             margin-left: auto;
             background: #1a1a1a;
@@ -227,11 +190,10 @@
             font-weight: 600;
         }
         .sidebar-item.active .badge {
-            background: rgba(255, 0, 0, 0.2);
+            background: rgba(255,0,0,0.2);
             color: #ff0000;
         }
 
-        /* === MAIN === */
         .main-content {
             flex: 1;
             padding: 24px 32px;
@@ -276,12 +238,11 @@
             border-color: #444;
         }
         .section-actions .filter-btn.active {
-            background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(204, 0, 0, 0.1));
+            background: linear-gradient(135deg, rgba(255,0,0,0.2), rgba(204,0,0,0.1));
             border-color: #ff0000;
             color: #ff0000;
         }
 
-        /* === VIDEO GRID === */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -297,8 +258,8 @@
         }
         .video-card:hover {
             transform: translateY(-6px);
-            border-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            border-color: rgba(255,255,255,0.1);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
         }
         .video-card .thumbnail {
             width: 100%;
@@ -313,14 +274,12 @@
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-        .video-card:hover .thumbnail img {
-            transform: scale(1.05);
-        }
+        .video-card:hover .thumbnail img { transform: scale(1.05); }
         .video-card .duration {
             position: absolute;
             bottom: 10px;
             right: 10px;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0,0,0,0.9);
             color: #fff;
             padding: 4px 10px;
             border-radius: 6px;
@@ -368,15 +327,13 @@
             margin-top: 6px;
             align-items: center;
         }
-        .video-card .meta .dot {
-            color: #444;
-        }
+        .video-card .meta .dot { color: #444; }
         .video-card .actions {
             display: flex;
             gap: 6px;
             margin-top: 12px;
             padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(255,255,255,0.06);
         }
         .video-card .actions button {
             background: none;
@@ -397,11 +354,8 @@
             background: #1a1a1a;
             color: #fff;
         }
-        .video-card .actions button.saved {
-            color: #ff0000;
-        }
+        .video-card .actions button.saved { color: #ff0000; }
 
-        /* === LOADING === */
         .loading {
             text-align: center;
             padding: 80px 20px;
@@ -416,9 +370,7 @@
             animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
             margin: 0 auto 20px;
         }
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
         .no-results {
             text-align: center;
             padding: 80px 20px;
@@ -429,19 +381,15 @@
             margin-bottom: 20px;
             display: block;
         }
-        .no-results p {
-            font-size: 18px;
-            color: #444;
-        }
+        .no-results p { font-size: 18px; color: #444; }
 
-        /* === PLAYER OVERLAY === */
         .player-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.98);
+            background: rgba(0,0,0,0.98);
             backdrop-filter: blur(40px);
             z-index: 999;
             display: none;
@@ -450,14 +398,11 @@
             padding: 20px;
             animation: fadeIn 0.3s ease;
         }
-        .player-overlay.active {
-            display: flex;
-        }
+        .player-overlay.active { display: flex; }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
-
         .player-container {
             background: #111;
             border-radius: 20px;
@@ -467,15 +412,14 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
         }
-
         .player-header {
             padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
             flex-shrink: 0;
             background: #0a0a0a;
         }
@@ -489,7 +433,7 @@
             color: #f0f0f0;
         }
         .player-header .close-btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             border: none;
             color: #888;
             width: 40px;
@@ -503,11 +447,10 @@
             justify-content: center;
         }
         .player-header .close-btn:hover {
-            background: rgba(255, 0, 0, 0.2);
+            background: rgba(255,0,0,0.2);
             color: #ff0000;
             transform: rotate(90deg);
         }
-
         .player-body {
             display: flex;
             flex-wrap: wrap;
@@ -515,7 +458,6 @@
             flex: 1;
             background: #0a0a0a;
         }
-
         .player-wrapper {
             flex: 1;
             min-width: 320px;
@@ -523,17 +465,13 @@
             background: #000;
             position: relative;
         }
-        .player-wrapper video {
+        .player-wrapper iframe {
             width: 100%;
             height: 100%;
             min-height: 340px;
+            border: none;
+            border-radius: 0;
         }
-        .video-js {
-            width: 100%;
-            height: 100%;
-            min-height: 340px;
-        }
-
         .player-sidebar {
             width: 340px;
             padding: 20px 24px;
@@ -559,8 +497,8 @@
             align-items: center;
             gap: 14px;
             padding: 14px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
             margin-bottom: 16px;
         }
         .player-sidebar .channel-avatar {
@@ -595,7 +533,7 @@
             background: #0a0a0a;
             padding: 14px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .player-sidebar .actions-row {
             display: flex;
@@ -623,15 +561,14 @@
             transform: translateY(-2px);
         }
         .player-sidebar .actions-row button.liked {
-            background: rgba(255, 0, 0, 0.15);
+            background: rgba(255,0,0,0.15);
             color: #ff0000;
         }
         .player-sidebar .actions-row button.saved {
-            background: rgba(255, 0, 0, 0.15);
+            background: rgba(255,0,0,0.15);
             color: #ff0000;
         }
 
-        /* === TOAST === */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -647,118 +584,47 @@
             opacity: 0;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255,255,255,0.06);
             backdrop-filter: blur(20px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
         .toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
 
-        /* === RESPONSIVE === */
         @media (max-width: 1024px) {
-            .player-sidebar {
-                width: 100%;
-                max-height: 260px;
-            }
-            .video-grid {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 16px;
-            }
+            .player-sidebar { width: 100%; max-height: 260px; }
+            .video-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
         }
-
         @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-            .video-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 12px;
-            }
-            .header {
-                padding: 10px 16px;
-                gap: 12px;
-            }
-            .logo {
-                font-size: 18px;
-            }
-            .logo .play-icon {
-                width: 28px;
-                height: 28px;
-                font-size: 12px;
-            }
-            .search-box {
-                max-width: 100%;
-                flex: 1 1 100%;
-                order: 3;
-            }
-            .search-box input {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-            .main-content {
-                padding: 16px;
-            }
-            .section-title {
-                font-size: 20px;
-            }
-            .player-overlay {
-                padding: 0;
-            }
-            .player-container {
-                max-height: 100vh;
-                border-radius: 0;
-            }
-            .player-wrapper video {
-                min-height: 200px;
-            }
-            .player-header h2 {
-                font-size: 14px;
-            }
-            .player-sidebar {
-                padding: 16px;
-            }
-            .player-sidebar .video-title {
-                font-size: 16px;
-            }
+            .sidebar { display: none; }
+            .video-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+            .header { padding: 10px 16px; gap: 12px; }
+            .logo { font-size: 18px; }
+            .logo .play-icon { width: 28px; height: 28px; font-size: 12px; }
+            .search-box { max-width: 100%; flex: 1 1 100%; order: 3; }
+            .search-box input { padding: 10px 16px; font-size: 13px; }
+            .main-content { padding: 16px; }
+            .section-title { font-size: 20px; }
+            .player-overlay { padding: 0; }
+            .player-container { max-height: 100vh; border-radius: 0; }
+            .player-wrapper iframe { min-height: 200px; }
+            .player-header h2 { font-size: 14px; }
+            .player-sidebar { padding: 16px; }
+            .player-sidebar .video-title { font-size: 16px; }
         }
-
         @media (max-width: 480px) {
-            .video-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .video-card .info {
-                padding: 10px 12px 14px;
-            }
-            .video-card .title {
-                font-size: 12px;
-            }
-            .video-card .channel {
-                font-size: 11px;
-            }
-            .video-card .meta {
-                font-size: 11px;
-            }
-            .video-card .actions button {
-                font-size: 10px;
-                padding: 4px 10px;
-            }
-            .section-title {
-                font-size: 18px;
-            }
-            .section-actions .filter-btn {
-                font-size: 11px;
-                padding: 6px 14px;
-            }
-            .header-actions .btn {
-                font-size: 11px;
-                padding: 8px 14px;
-            }
-            .header-actions .btn-outline {
-                padding: 8px 12px;
-            }
+            .video-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .video-card .info { padding: 10px 12px 14px; }
+            .video-card .title { font-size: 12px; }
+            .video-card .channel { font-size: 11px; }
+            .video-card .meta { font-size: 11px; }
+            .video-card .actions button { font-size: 10px; padding: 4px 10px; }
+            .section-title { font-size: 18px; }
+            .section-actions .filter-btn { font-size: 11px; padding: 6px 14px; }
+            .header-actions .btn { font-size: 11px; padding: 8px 14px; }
+            .header-actions .btn-outline { padding: 8px 12px; }
         }
     </style>
 </head>
@@ -842,9 +708,7 @@
             </div>
             <div class="player-body">
                 <div class="player-wrapper" id="playerWrapper">
-                    <video id="myPlayer" class="video-js vjs-theme-fantasy" controls preload="auto" data-setup='{}'>
-                        <p class="vjs-no-js">Seu navegador não suporta vídeo.</p>
-                    </video>
+                    <iframe id="playerIframe" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 <div class="player-sidebar" id="playerSidebar">
                     <div class="video-title" id="pTitle">Título</div>
@@ -869,14 +733,16 @@
 
     <script>
         // ============================================================
-        //  PIPEFLIX - PLAYER ALTERNATIVO
+        //  PIPEFLIX - COM API DO INVIDIOUS (VÍDEOS REAIS)
         // ============================================================
 
         // ===== CONFIGURAÇÃO =====
-        const API_URL = 'https://kayquesaless482-tech.github.io/PipelineWeb/';
+        // Usamos uma instância pública do Invidious (sem necessidade de chave)
+        const INVIDIOUS_INSTANCE = 'https://invidious.namazso.eu';
+        // Alternativas: https://invidious.snopyta.org, https://yewtu.be, etc.
 
         const CONFIG = {
-            apiBase: API_URL,
+            apiBase: INVIDIOUS_INSTANCE,
             filters: { hideShorts: false, hideWatched: false },
             currentFilter: 'all'
         };
@@ -987,7 +853,7 @@
             if (first) setActive(first, 'feed');
         }
 
-        // ===== BUSCAR VÍDEOS COM A API =====
+        // ===== BUSCAR VÍDEOS COM A API DO INVIDIOUS =====
         async function loadFeed(query = '') {
             if (state.isLoading) return;
             state.isLoading = true;
@@ -998,13 +864,15 @@
 
             try {
                 const searchQuery = query || 'programação';
-                const url = `${CONFIG.apiBase}/youtube/search?all=${encodeURIComponent(searchQuery)}`;
+                // Usamos o endpoint de busca do Invidious
+                const url = `${CONFIG.apiBase}/api/v1/search?q=${encodeURIComponent(searchQuery)}&type=video`;
                 
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('HTTP ' + response.status);
                 const data = await response.json();
 
-                const results = data.data || data.results || data || [];
+                // O Invidious retorna um array de resultados
+                const results = data || [];
                 
                 if (!results || results.length === 0) {
                     document.getElementById('noResults').style.display = 'block';
@@ -1014,24 +882,26 @@
                 }
 
                 state.feed = results.map(v => ({
-                    id: v.videoId || v.id || v.video_id,
+                    id: v.videoId,
                     title: v.title || 'Sem título',
-                    channel: v.channelTitle || v.channel || v.author || 'Desconhecido',
-                    channelId: v.channelId || v.channel_id || '',
-                    thumb: v.thumbnail || v.thumbnails?.[0]?.url || `https://img.youtube.com/vi/${v.videoId || v.id}/hqdefault.jpg`,
-                    views: parseInt(v.viewCount || v.views || 0),
-                    duration: parseDuration(v.duration || v.length || '0:00'),
-                    published: v.publishedAt || v.published || Date.now() / 1000,
-                    isShort: (v.duration && v.duration.includes('PT') && v.duration.includes('S') && parseDuration(v.duration) < 60) || false,
-                    watched: state.viewed.includes(v.videoId || v.id)
+                    channel: v.author || 'Desconhecido',
+                    channelId: v.authorId || '',
+                    thumb: v.videoThumbnails?.[v.videoThumbnails.length - 1]?.url || `https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`,
+                    views: parseInt(v.viewCount) || 0,
+                    duration: v.lengthSeconds || 0,
+                    published: v.published || Date.now() / 1000,
+                    isShort: (v.lengthSeconds && v.lengthSeconds < 60) || false,
+                    watched: state.viewed.includes(v.videoId),
+                    description: v.description || ''
                 }));
 
                 document.getElementById('feedCount').textContent = state.feed.length;
                 renderFeed();
+                showToast(`✅ ${state.feed.length} vídeos carregados!`);
 
             } catch (err) {
-                console.warn('Erro ao carregar feed:', err);
-                showToast('❌ Erro ao carregar, usando vídeos de exemplo');
+                console.warn('Erro ao carregar feed do Invidious:', err);
+                showToast('❌ Erro ao carregar, usando fallback');
                 loadFallbackFeed();
             }
 
@@ -1039,15 +909,14 @@
             state.isLoading = false;
         }
 
-        // ===== FALLBACK =====
+        // ===== FALLBACK (vídeos reais do YouTube) =====
         function loadFallbackFeed() {
             state.feed = [
-                { id: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up (Official Music Video)', channel: 'Rick Astley', channelId: 'UCJtUOos_MwL_EfR6LJjYJvg', thumb: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg', views: 1300000000, duration: 213, published: Date.now()/1000 - 86400*365*12, isShort: false, watched: false },
-                { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE (강남스타일) MV', channel: 'PSY', channelId: 'UCBuS4EwM4E2Mh9k0V8l0xHQ', thumb: 'https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg', views: 4800000000, duration: 252, published: Date.now()/1000 - 86400*365*11, isShort: false, watched: false },
-                { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'Luis Fonsi', channelId: 'UC5XhJfH8t4zFwZkFv-nXAKQ', thumb: 'https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg', views: 8200000000, duration: 281, published: Date.now()/1000 - 86400*365*7, isShort: false, watched: false },
-                { id: 'pRpeEdMmmQ0', title: 'Deadmau5 - The Veldt (Official Music Video)', channel: 'deadmau5', channelId: 'UCrKw2bNvxBHd7cVcV3L7lPA', thumb: 'https://img.youtube.com/vi/pRpeEdMmmQ0/hqdefault.jpg', views: 180000000, duration: 530, published: Date.now()/1000 - 86400*365*12, isShort: false, watched: false },
-                { id: 'CevxZvSJLk8', title: 'Alan Walker - Faded (Official Music Video)', channel: 'Alan Walker', channelId: 'UCJrOtniJ0-NWz37R6u8ZpFA', thumb: 'https://img.youtube.com/vi/CevxZvSJLk8/hqdefault.jpg', views: 3400000000, duration: 212, published: Date.now()/1000 - 86400*365*8, isShort: false, watched: false },
-                { id: 'wJ9OUXG8hUE', title: 'C418 - Sweden (Minecraft Soundtrack)', channel: 'C418', channelId: 'UC5p7t5t8t5t8t5t8t5t8t5t8', thumb: 'https://img.youtube.com/vi/wJ9OUXG8hUE/hqdefault.jpg', views: 50000000, duration: 232, published: Date.now()/1000 - 86400*365*13, isShort: false, watched: false },
+                { id: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up (Official Music Video)', channel: 'Rick Astley', channelId: 'UCJtUOos_MwL_EfR6LJjYJvg', thumb: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg', views: 1300000000, duration: 213, published: Date.now()/1000 - 86400*365*12, isShort: false, watched: false, description: 'Rick Astley - Never Gonna Give You Up (Official Music Video)' },
+                { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE (강남스타일) MV', channel: 'PSY', channelId: 'UCBuS4EwM4E2Mh9k0V8l0xHQ', thumb: 'https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg', views: 4800000000, duration: 252, published: Date.now()/1000 - 86400*365*11, isShort: false, watched: false, description: 'PSY - GANGNAM STYLE' },
+                { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'Luis Fonsi', channelId: 'UC5XhJfH8t4zFwZkFv-nXAKQ', thumb: 'https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg', views: 8200000000, duration: 281, published: Date.now()/1000 - 86400*365*7, isShort: false, watched: false, description: 'Luis Fonsi - Despacito ft. Daddy Yankee' },
+                { id: 'CevxZvSJLk8', title: 'Alan Walker - Faded (Official Music Video)', channel: 'Alan Walker', channelId: 'UCJrOtniJ0-NWz37R6u8ZpFA', thumb: 'https://img.youtube.com/vi/CevxZvSJLk8/hqdefault.jpg', views: 3400000000, duration: 212, published: Date.now()/1000 - 86400*365*8, isShort: false, watched: false, description: 'Alan Walker - Faded' },
+                { id: 'wJ9OUXG8hUE', title: 'C418 - Sweden (Minecraft Soundtrack)', channel: 'C418', channelId: 'UC5p7t5t8t5t8t5t8t5t8t5t8', thumb: 'https://img.youtube.com/vi/wJ9OUXG8hUE/hqdefault.jpg', views: 50000000, duration: 232, published: Date.now()/1000 - 86400*365*13, isShort: false, watched: false, description: 'C418 - Sweden' },
             ];
             document.getElementById('feedCount').textContent = state.feed.length;
             renderFeed();
@@ -1258,34 +1127,31 @@
             renderSubscriptions();
         }
 
-        // ===== PLAYER COM VIDEO.JS =====
-        let playerInstance = null;
-
+        // ===== PLAYER (iframe do YouTube) =====
         function playVideo(videoId) {
             state.currentVideoId = videoId;
             document.getElementById('playerOverlay').classList.add('active');
             document.getElementById('playerTitle').textContent = 'Carregando...';
 
+            // Buscar detalhes do vídeo (opcional, para exibir no sidebar)
             fetchVideoDetails(videoId);
         }
 
         async function fetchVideoDetails(videoId) {
             try {
-                const url = `${CONFIG.apiBase}/youtube/search?video=${videoId}`;
+                // Tentar obter detalhes do Invidious
+                const url = `${CONFIG.apiBase}/api/v1/videos/${videoId}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('HTTP ' + response.status);
                 const data = await response.json();
 
-                const v = data.data || data.results || data;
-                const videoData = Array.isArray(v) ? v[0] : v;
-
-                if (videoData) {
-                    state.currentVideoData = videoData;
-                    const title = videoData.title || 'Vídeo';
-                    const channel = videoData.channelTitle || videoData.channel || 'Canal';
-                    const views = videoData.viewCount || videoData.views || 0;
-                    const description = videoData.description || 'Sem descrição';
-                    const subs = videoData.subscriberCount || 0;
+                if (data) {
+                    state.currentVideoData = data;
+                    const title = data.title || 'Vídeo';
+                    const channel = data.author || 'Canal';
+                    const views = data.viewCount || 0;
+                    const description = data.description || 'Sem descrição';
+                    const subs = data.subCount || 0;
 
                     document.getElementById('playerTitle').textContent = title;
                     document.getElementById('pTitle').textContent = title;
@@ -1295,47 +1161,30 @@
                     document.getElementById('pDesc').textContent = description;
                     document.getElementById('pAvatar').textContent = channel.charAt(0).toUpperCase();
 
-                    state.currentChannelId = videoData.channelId || videoData.channel_id || '';
-
-                    setupPlayer(videoId);
-                    updatePlayerButtons(videoId);
+                    state.currentChannelId = data.authorId || '';
                 }
             } catch (err) {
                 console.warn('Erro ao carregar detalhes:', err);
-                setupPlayer(videoId);
-                showToast('⚠️ Detalhes indisponíveis');
+                // Se falhar, ao menos o vídeo toca
             }
+
+            // Configurar o iframe com o vídeo
+            setupPlayer(videoId);
+            updatePlayerButtons(videoId);
         }
 
         function setupPlayer(videoId) {
             const wrapper = document.getElementById('playerWrapper');
+            const iframe = document.getElementById('playerIframe');
             
-            // Remove qualquer iframe existente
-            const existingIframe = wrapper.querySelector('iframe');
-            if (existingIframe) {
-                wrapper.removeChild(existingIframe);
-            }
-            
-            // Esconde o video element
-            const videoElement = document.getElementById('myPlayer');
-            if (videoElement) videoElement.style.display = 'none';
-            
-            // Cria iframe com o vídeo
+            // Define a URL do embed com parâmetros
             const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0&controls=1&enablejsapi=1`;
-            
-            const iframe = document.createElement('iframe');
             iframe.src = embedUrl;
-            iframe.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
-            iframe.allowFullscreen = true;
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-            iframe.style.minHeight = '340px';
-            iframe.style.border = 'none';
-            iframe.style.borderRadius = '0';
-            iframe.id = 'playerIframe';
-            wrapper.appendChild(iframe);
 
-            document.getElementById('playerTitle').textContent = document.getElementById('pTitle').textContent || 'Vídeo';
+            // Atualiza título se ainda não foi
+            if (document.getElementById('playerTitle').textContent === 'Carregando...') {
+                document.getElementById('playerTitle').textContent = 'Vídeo';
+            }
         }
 
         function updatePlayerButtons(videoId) {
@@ -1364,16 +1213,8 @@
             document.getElementById('playerOverlay').classList.remove('active');
             const iframe = document.getElementById('playerIframe');
             if (iframe) iframe.src = '';
-            
-            if (playerInstance) {
-                playerInstance.dispose();
-                playerInstance = null;
-            }
-            
-            const video = document.getElementById('myPlayer');
-            if (video) video.style.display = 'block';
-            
             state.currentVideoId = null;
+            state.currentVideoData = null;
         }
 
         function togglePlayerLike() {
@@ -1408,29 +1249,6 @@
         }
 
         // ===== UTILITÁRIOS =====
-        function parseDuration(duration) {
-            if (!duration) return 0;
-            if (typeof duration === 'number') return duration;
-            
-            if (duration.includes('PT')) {
-                const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-                if (match) {
-                    const h = parseInt(match[1]) || 0;
-                    const m = parseInt(match[2]) || 0;
-                    const s = parseInt(match[3]) || 0;
-                    return h * 3600 + m * 60 + s;
-                }
-            }
-            
-            if (duration.includes(':')) {
-                const parts = duration.split(':').map(Number);
-                if (parts.length === 2) return parts[0] * 60 + parts[1];
-                if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
-            }
-            
-            return parseInt(duration) || 0;
-        }
-
         function formatDuration(seconds) {
             if (!seconds || seconds < 0) return '0:00';
             const h = Math.floor(seconds / 3600);
