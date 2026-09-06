@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PipeFlix 2.0 – Player Alternativo</title>
+    <title>PipeFlix 3.0 – InnerTube API</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
 
-    <!-- Video.js (opcional, mas mantido) -->
+    <!-- Video.js (opcional) -->
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
@@ -789,7 +789,7 @@
         <div class="logo" onclick="goHome()">
             <span class="icon">▶</span>
             <span>Pipe</span><span class="highlight">Flix</span>
-            <small>2.0</small>
+            <small>3.0</small>
         </div>
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Pesquisar vídeos..." onkeypress="if(event.key==='Enter') searchVideos()" />
@@ -885,20 +885,13 @@
 
     <script>
         // ================================================================
-        //  PIPEFLIX 2.0 – SEM API OFICIAL, COM MÚLTIPLAS INSTÂNCIAS
+        //  PIPEFLIX 3.0 – USANDO A PIPED API (INNERTUBE)
+        //  https://pipedapi.kavin.rocks
+        //  TOTALMENTE GRATUITA, SEM LIMITES E SEM CHAVE
         // ================================================================
 
-        // ===== LISTA DE INSTÂNCIAS INVIDIOUS =====
-        const INVIDIOUS_INSTANCES = [
-            'https://invidious.namazso.eu',
-            'https://yewtu.be',
-            'https://invidious.snopyta.org',
-            'https://invidious.kavin.rocks',
-            'https://vid.puffyan.us',
-            'https://invidious.io',
-            'https://inv.riverside.rocks',
-            'https://invidious.private.coffee'
-        ];
+        // ===== API PIPED (INNERTUBE) =====
+        const PIPED_API = 'https://pipedapi.kavin.rocks';
 
         // ===== ESTADO GLOBAL =====
         let state = {
@@ -910,8 +903,7 @@
             viewed: [],
             currentVideoId: null,
             currentView: 'feed',
-            isLoading: false,
-            activeInstance: null // será definido na primeira busca bem-sucedida
+            isLoading: false
         };
 
         // ===== CONFIG =====
@@ -1014,7 +1006,7 @@
             if (first) setActive(first, 'feed');
         }
 
-        // ===== BUSCA INTELIGENTE COM MÚLTIPLAS INSTÂNCIAS =====
+        // ===== BUSCAR VÍDEOS COM PIPED API (INNERTUBE) =====
         async function loadFeed(query = '') {
             if (state.isLoading) return;
             state.isLoading = true;
@@ -1025,60 +1017,51 @@
 
             const searchQuery = query || 'programação';
 
-            // Tenta cada instância até conseguir uma resposta
-            let lastError = null;
-            for (const instance of INVIDIOUS_INSTANCES) {
-                try {
-                    const url =
-                        `${instance}/api/v1/search?q=${encodeURIComponent(searchQuery)}&type=video&fields=videoId,title,author,authorId,viewCount,lengthSeconds,published,videoThumbnails,description`;
-                    const response = await fetch(url, {
-                        signal: AbortSignal.timeout(8000) // timeout de 8s
-                    });
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            try {
+                // Endpoint de busca do Piped
+                const url = `${PIPED_API}/search?q=${encodeURIComponent(searchQuery)}&filter=videos`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-                    const data = await response.json();
-                    if (!data || !data.length) continue;
+                const data = await response.json();
 
-                    // Sucesso! Guarda a instância ativa
-                    state.activeInstance = instance;
-                    processResults(data);
-                    showToast(`✅ ${data.length} vídeos carregados via ${new URL(instance).hostname}`);
+                // A Piped retorna { items: [...] }
+                const results = data.items || [];
+
+                if (!results || results.length === 0) {
+                    document.getElementById('noResults').style.display = 'block';
                     document.getElementById('loadingIndicator').style.display = 'none';
                     state.isLoading = false;
                     return;
-                } catch (err) {
-                    lastError = err;
-                    console.warn(`Instância ${instance} falhou:`, err.message);
-                    continue;
                 }
+
+                // Mapear os resultados para nosso formato
+                state.feed = results.map(v => ({
+                    id: v.url ? v.url.split('watch?v=')[1] : v.videoId,
+                    title: v.title || 'Sem título',
+                    channel: v.uploaderName || v.author || 'Desconhecido',
+                    channelId: v.uploaderUrl ? v.uploaderUrl.split('/channel/')[1] || '' : '',
+                    thumb: v.thumbnail || `https://img.youtube.com/vi/${v.videoId || v.url}/hqdefault.jpg`,
+                    views: v.views || v.viewCount || 0,
+                    duration: v.duration || 0,
+                    published: v.uploadedDate ? new Date(v.uploadedDate).getTime() / 1000 : Date.now() / 1000,
+                    isShort: (v.duration && v.duration < 60) || false,
+                    watched: state.viewed.includes(v.videoId || v.url),
+                    description: v.description || ''
+                }));
+
+                document.getElementById('feedCount').textContent = state.feed.length;
+                renderFeed();
+                showToast(`✅ ${state.feed.length} vídeos carregados via InnerTube (Piped)`);
+
+            } catch (err) {
+                console.warn('Erro ao buscar via Piped:', err);
+                showToast('⚠️ Erro na API, usando fallback');
+                loadFallbackFeed();
             }
 
-            // Se todas falharam, usa o fallback
-            console.warn('Todas as instâncias falharam. Usando fallback.', lastError);
-            showToast('⚠️ Usando vídeos de exemplo (fallback)');
-            loadFallbackFeed();
             document.getElementById('loadingIndicator').style.display = 'none';
             state.isLoading = false;
-        }
-
-        function processResults(results) {
-            state.feed = results.map(v => ({
-                id: v.videoId,
-                title: v.title || 'Sem título',
-                channel: v.author || 'Desconhecido',
-                channelId: v.authorId || '',
-                thumb: v.videoThumbnails?.length ? v.videoThumbnails[v.videoThumbnails.length - 1].url :
-                    `https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`,
-                views: parseInt(v.viewCount) || 0,
-                duration: v.lengthSeconds || 0,
-                published: v.published || Date.now() / 1000,
-                isShort: (v.lengthSeconds && v.lengthSeconds < 60) || false,
-                watched: state.viewed.includes(v.videoId),
-                description: v.description || ''
-            }));
-
-            document.getElementById('feedCount').textContent = state.feed.length;
-            renderFeed();
         }
 
         // ===== FALLBACK (vídeos reais do YouTube) =====
@@ -1143,21 +1126,10 @@
                 isShort: false,
                 watched: false,
                 description: 'C418 - Sweden'
-            }, {
-                id: 'pRpeEdMmmQ0',
-                title: 'Deadmau5 - The Veldt (Official Music Video)',
-                channel: 'deadmau5',
-                channelId: 'UCrKw2bNvxBHd7cVcV3L7lPA',
-                thumb: 'https://img.youtube.com/vi/pRpeEdMmmQ0/hqdefault.jpg',
-                views: 180000000,
-                duration: 530,
-                published: Date.now() / 1000 - 86400 * 365 * 12,
-                isShort: false,
-                watched: false,
-                description: 'Deadmau5 - The Veldt'
             }];
             document.getElementById('feedCount').textContent = state.feed.length;
             renderFeed();
+            showToast('📡 Modo offline (vídeos de exemplo)');
         }
 
         // ===== RENDER =====
@@ -1374,7 +1346,7 @@
             document.getElementById('playerOverlay').classList.add('active');
             document.getElementById('playerTitle').textContent = 'Carregando...';
 
-            // Tenta buscar detalhes do Invidious (opcional)
+            // Buscar detalhes do vídeo via Piped
             fetchVideoDetails(videoId);
 
             // Configura o iframe
@@ -1386,8 +1358,7 @@
 
         async function fetchVideoDetails(videoId) {
             try {
-                const instance = state.activeInstance || INVIDIOUS_INSTANCES[0];
-                const url = `${instance}/api/v1/videos/${videoId}`;
+                const url = `${PIPED_API}/streams/${videoId}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('HTTP ' + response.status);
                 const data = await response.json();
@@ -1395,13 +1366,13 @@
                 if (data) {
                     document.getElementById('playerTitle').textContent = data.title || 'Vídeo';
                     document.getElementById('pTitle').textContent = data.title || 'Título';
-                    document.getElementById('pMeta').textContent = (data.viewCount ? formatViews(data.viewCount) : '0') +
+                    document.getElementById('pMeta').textContent = (data.views ? formatViews(data.views) : '0') +
                         ' visualizações';
-                    document.getElementById('pChannel').textContent = data.author || 'Canal';
-                    document.getElementById('pSubs').textContent = data.subCount ? formatViews(data.subCount) +
-                        ' inscritos' : '';
+                    document.getElementById('pChannel').textContent = data.uploader || 'Canal';
+                    document.getElementById('pSubs').textContent = data.uploaderSubscriberCount ? formatViews(data
+                        .uploaderSubscriberCount) + ' inscritos' : '';
                     document.getElementById('pDesc').textContent = data.description || 'Sem descrição';
-                    document.getElementById('pAvatar').textContent = (data.author || 'C').charAt(0).toUpperCase();
+                    document.getElementById('pAvatar').textContent = (data.uploader || 'C').charAt(0).toUpperCase();
                 }
             } catch (_) {
                 // silencioso
@@ -1474,7 +1445,7 @@
             const m = Math.floor((seconds % 3600) / 60);
             const s = Math.floor(seconds % 60);
             if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            return `${m}:${String(s).padStart(2, '0')}`;
+            return `${m}:${String(m).padStart(2, '0')}`;
         }
 
         function formatViews(n) {
