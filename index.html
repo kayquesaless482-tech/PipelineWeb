@@ -3,18 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PipeFlix 3.0 – InnerTube API</title>
+    <title>PipeFlix Player</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
 
-    <!-- Video.js (opcional) -->
-    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
-
     <style>
         /* ============================================================
-           ESTILOS – TEMA NEON ESCURO COM ANIMAÇÕES
+           ESTILOS – TEMA NEON ESCURO
            ============================================================ */
         * {
             margin: 0;
@@ -27,7 +23,6 @@
             background: #0b0b0b;
             color: #f0f0f0;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         ::-webkit-scrollbar {
@@ -48,7 +43,7 @@
             padding: 14px 28px;
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 20px;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -58,13 +53,12 @@
 
         .logo {
             font-weight: 900;
-            font-size: 26px;
+            font-size: 24px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 10px;
             white-space: nowrap;
-            letter-spacing: -0.5px;
         }
         .logo .icon {
             background: linear-gradient(135deg, #ff2d55, #ff0a0a);
@@ -74,7 +68,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
             color: #fff;
             box-shadow: 0 0 30px rgba(255, 45, 85, 0.3);
         }
@@ -85,30 +79,22 @@
         .logo .highlight {
             color: #ff2d55;
         }
-        .logo small {
-            font-size: 11px;
-            color: #555;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            margin-left: 2px;
-        }
 
-        .search-box {
+        .url-input-wrapper {
             flex: 1;
-            max-width: 620px;
             display: flex;
-            min-width: 180px;
+            min-width: 280px;
             background: #181818;
             border-radius: 40px;
             overflow: hidden;
             border: 1.5px solid #282828;
             transition: all 0.3s ease;
         }
-        .search-box:focus-within {
+        .url-input-wrapper:focus-within {
             border-color: #ff2d55;
             box-shadow: 0 0 30px rgba(255, 45, 85, 0.15);
         }
-        .search-box input {
+        .url-input-wrapper input {
             flex: 1;
             padding: 12px 24px;
             background: transparent;
@@ -118,534 +104,214 @@
             outline: none;
             font-family: 'Inter', sans-serif;
         }
-        .search-box input::placeholder {
+        .url-input-wrapper input::placeholder {
             color: #555;
         }
-        .search-box button {
-            padding: 12px 24px;
-            background: transparent;
+        .url-input-wrapper button {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #ff2d55, #ff0a0a);
             border: none;
-            color: #666;
-            cursor: pointer;
-            font-size: 20px;
-            transition: all 0.3s;
-        }
-        .search-box button:hover {
             color: #fff;
-            background: rgba(255, 255, 255, 0.05);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .url-input-wrapper button:hover {
+            filter: brightness(1.2);
+            transform: scale(1.02);
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-left: auto;
+            gap: 12px;
         }
         .header-actions .btn {
-            padding: 10px 22px;
-            background: linear-gradient(135deg, #ff2d55, #ff0a0a);
-            color: #fff;
-            border: none;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: 'Inter', sans-serif;
-        }
-        .header-actions .btn:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(255, 45, 85, 0.35);
-        }
-        .header-actions .btn-outline {
+            padding: 10px 20px;
             background: transparent;
             border: 1.5px solid #333;
             color: #aaa;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
         }
-        .header-actions .btn-outline:hover {
+        .header-actions .btn:hover {
             background: #1a1a1a;
             border-color: #555;
-            transform: translateY(-2px);
+            color: #fff;
         }
 
         /* ===== LAYOUT ===== */
         .container {
             display: flex;
-            max-width: 1440px;
+            max-width: 1400px;
             margin: 0 auto;
-        }
-
-        .sidebar {
-            width: 240px;
-            padding: 18px 12px;
-            position: sticky;
-            top: 72px;
-            height: calc(100vh - 72px);
-            overflow-y: auto;
-            flex-shrink: 0;
-            border-right: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .sidebar-section {
-            margin-bottom: 28px;
-        }
-        .sidebar-section .title {
-            font-size: 10px;
-            text-transform: uppercase;
-            color: #444;
-            padding: 8px 16px;
-            letter-spacing: 1.5px;
-            font-weight: 700;
-        }
-        .sidebar-item {
-            padding: 10px 16px;
-            cursor: pointer;
-            font-size: 14px;
-            border-radius: 14px;
-            color: #777;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            transition: all 0.25s ease;
-            font-weight: 500;
-            position: relative;
-        }
-        .sidebar-item:hover {
-            background: #181818;
-            color: #fff;
-            transform: translateX(4px);
-        }
-        .sidebar-item.active {
-            background: rgba(255, 45, 85, 0.12);
-            color: #ff2d55;
-        }
-        .sidebar-item .icon {
-            font-size: 20px;
-            width: 28px;
-            text-align: center;
-        }
-        .sidebar-item .badge {
-            margin-left: auto;
-            background: #181818;
-            color: #666;
-            font-size: 10px;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-weight: 700;
-        }
-        .sidebar-item.active .badge {
-            background: rgba(255, 45, 85, 0.2);
-            color: #ff2d55;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 28px 36px;
-            min-width: 0;
-        }
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .section-title {
-            font-size: 28px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .section-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .section-actions .filter-btn {
-            padding: 8px 20px;
-            background: #141414;
-            border: 1px solid #282828;
-            border-radius: 30px;
-            color: #666;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
-        }
-        .section-actions .filter-btn:hover {
-            background: #1e1e1e;
-            color: #fff;
-            border-color: #444;
-        }
-        .section-actions .filter-btn.active {
-            background: rgba(255, 45, 85, 0.15);
-            border-color: #ff2d55;
-            color: #ff2d55;
-        }
-
-        /* ===== VIDEO GRID ===== */
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            padding: 20px 28px;
             gap: 28px;
         }
-        .video-card {
-            background: #121212;
-            border-radius: 20px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid transparent;
-            position: relative;
-        }
-        .video-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(255, 45, 85, 0.2);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-        }
-        .video-card .thumbnail {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #0a0a0a;
-            position: relative;
-            overflow: hidden;
-        }
-        .video-card .thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-        .video-card:hover .thumbnail img {
-            transform: scale(1.06);
-        }
-        .video-card .duration {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-        .video-card .shorts-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: linear-gradient(135deg, #ff2d55, #ff0a0a);
-            color: #fff;
-            font-size: 9px;
-            font-weight: 800;
-            padding: 4px 14px;
-            border-radius: 30px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .video-card .info {
-            padding: 18px 20px 20px;
-        }
-        .video-card .title {
-            font-weight: 600;
-            font-size: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.5;
-            margin-bottom: 6px;
-            color: #f0f0f0;
-        }
-        .video-card .channel {
-            font-size: 13px;
-            color: #777;
-            font-weight: 400;
-        }
-        .video-card .meta {
-            font-size: 13px;
-            color: #555;
-            display: flex;
-            gap: 12px;
-            margin-top: 6px;
-            align-items: center;
-        }
-        .video-card .meta .dot {
-            color: #3a3a3a;
-        }
-        .video-card .actions {
-            display: flex;
-            gap: 4px;
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .video-card .actions button {
-            background: none;
-            border: none;
-            color: #555;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            padding: 6px 16px;
-            border-radius: 30px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-family: 'Inter', sans-serif;
-        }
-        .video-card .actions button:hover {
-            background: #1c1c1c;
-            color: #fff;
-        }
-        .video-card .actions button.saved {
-            color: #ff2d55;
-        }
-        .video-card .actions button.subscribed {
-            color: #ff2d55;
-        }
 
-        /* ===== LOADING ===== */
-        .loading {
-            text-align: center;
-            padding: 80px 20px;
-            color: #555;
-        }
-        .loading .spinner {
-            width: 56px;
-            height: 56px;
-            border: 4px solid #1a1a1a;
-            border-top: 4px solid #ff2d55;
-            border-radius: 50%;
-            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-            margin: 0 auto 20px;
-        }
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        .loading p {
-            font-size: 16px;
-            color: #444;
-        }
-        .no-results {
-            text-align: center;
-            padding: 80px 20px;
-            color: #666;
-        }
-        .no-results .emoji {
-            font-size: 60px;
-            margin-bottom: 20px;
-            display: block;
-        }
-        .no-results p {
-            font-size: 18px;
-            color: #444;
-        }
-
-        /* ===== PLAYER OVERLAY ===== */
-        .player-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.97);
-            backdrop-filter: blur(40px);
-            z-index: 999;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
-        }
-        .player-overlay.active {
-            display: flex;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .player-container {
-            background: #121212;
-            border-radius: 24px;
-            max-width: 1200px;
-            width: 100%;
-            max-height: 92vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.9);
-        }
-
-        .player-header {
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            flex-shrink: 0;
-            background: #0e0e0e;
-        }
-        .player-header h2 {
-            font-size: 16px;
-            font-weight: 600;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            margin-right: 16px;
-            color: #f0f0f0;
-        }
-        .player-header .close-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: none;
-            color: #666;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .player-header .close-btn:hover {
-            background: rgba(255, 45, 85, 0.15);
-            color: #ff2d55;
-            transform: rotate(90deg);
-        }
-
-        .player-body {
-            display: flex;
-            flex-wrap: wrap;
-            overflow: hidden;
+        /* ===== PLAYER ===== */
+        .player-section {
             flex: 1;
-            background: #0b0b0b;
+            min-width: 0;
         }
 
         .player-wrapper {
-            flex: 1;
-            min-width: 320px;
-            min-height: 340px;
             background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
             position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
         }
         .player-wrapper iframe {
             width: 100%;
             height: 100%;
-            min-height: 340px;
             border: none;
         }
 
-        .player-sidebar {
-            width: 340px;
-            padding: 20px 24px;
-            overflow-y: auto;
-            background: #0e0e0e;
-            flex-shrink: 0;
-            max-height: 540px;
+        .video-info {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: #121212;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
-        .player-sidebar .video-title {
-            font-size: 19px;
+        .video-info .title {
+            font-size: 20px;
             font-weight: 700;
-            margin-bottom: 8px;
-            line-height: 1.4;
-            color: #f0f0f0;
+            margin-bottom: 6px;
         }
-        .player-sidebar .video-meta {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 16px;
-        }
-        .player-sidebar .channel-info {
+        .video-info .channel {
+            font-size: 15px;
+            color: #888;
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 14px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            margin-bottom: 16px;
+            gap: 12px;
         }
-        .player-sidebar .channel-avatar {
-            width: 44px;
-            height: 44px;
+        .video-info .channel .avatar {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: linear-gradient(135deg, #ff2d55, #ff0a0a);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 18px;
-            flex-shrink: 0;
+            font-size: 14px;
             color: #fff;
         }
-        .player-sidebar .channel-name {
-            font-weight: 600;
-            font-size: 15px;
-            color: #f0f0f0;
-        }
-        .player-sidebar .channel-subs {
-            font-size: 13px;
-            color: #555;
-        }
-        .player-sidebar .description {
-            font-size: 14px;
-            color: #777;
-            line-height: 1.7;
-            max-height: 100px;
-            overflow-y: auto;
-            margin-bottom: 16px;
-            background: #0a0a0a;
-            padding: 14px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .player-sidebar .actions-row {
+        .video-info .actions {
             display: flex;
             gap: 10px;
+            margin-top: 14px;
             flex-wrap: wrap;
         }
-        .player-sidebar .actions-row button {
-            padding: 10px 20px;
+        .video-info .actions button {
+            padding: 8px 18px;
             background: #1a1a1a;
             border: none;
-            border-radius: 40px;
-            color: #888;
+            border-radius: 30px;
+            color: #aaa;
             cursor: pointer;
             font-size: 13px;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.3s;
             font-family: 'Inter', sans-serif;
         }
-        .player-sidebar .actions-row button:hover {
+        .video-info .actions button:hover {
             background: #282828;
             color: #fff;
-            transform: translateY(-2px);
         }
-        .player-sidebar .actions-row button.liked {
+        .video-info .actions button.active {
             background: rgba(255, 45, 85, 0.15);
             color: #ff2d55;
         }
-        .player-sidebar .actions-row button.saved {
-            background: rgba(255, 45, 85, 0.15);
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 300px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-section {
+            background: #121212;
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .sidebar-section .title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .history-item {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 8px;
+            padding: 10px 8px;
+        }
+        .history-item:hover {
+            background: #1a1a1a;
+        }
+        .history-item img {
+            width: 80px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+        .history-item .info {
+            flex: 1;
+            min-width: 0;
+        }
+        .history-item .info .h-title {
+            font-size: 13px;
+            font-weight: 600;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .history-item .info .h-channel {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+        .history-item .remove {
+            background: none;
+            border: none;
+            color: #444;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 4px;
+        }
+        .history-item .remove:hover {
             color: #ff2d55;
+        }
+
+        .empty-state {
+            color: #444;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px 0;
         }
 
         /* ===== TOAST ===== */
@@ -675,24 +341,32 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
-            .player-sidebar {
-                width: 100%;
-                max-height: 260px;
+            .container {
+                flex-direction: column;
             }
-            .video-grid {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 18px;
+            .sidebar {
+                width: 100%;
+            }
+            .sidebar-section {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .sidebar-section .title {
+                grid-column: 1 / -1;
+            }
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .history-item img {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 16/9;
             }
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-            .video-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 14px;
-            }
             .header {
                 padding: 10px 16px;
                 gap: 12px;
@@ -705,76 +379,42 @@
                 height: 30px;
                 font-size: 14px;
             }
-            .search-box {
-                max-width: 100%;
+            .url-input-wrapper {
+                min-width: 100%;
                 flex: 1 1 100%;
                 order: 3;
             }
-            .search-box input {
+            .url-input-wrapper input {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            .url-input-wrapper button {
                 padding: 10px 18px;
-                font-size: 14px;
+                font-size: 13px;
             }
-            .main-content {
-                padding: 16px;
+            .container {
+                padding: 12px 16px;
+                gap: 16px;
             }
-            .section-title {
-                font-size: 22px;
+            .video-info .title {
+                font-size: 17px;
             }
-            .player-overlay {
-                padding: 0;
-            }
-            .player-container {
-                max-height: 100vh;
-                border-radius: 0;
-            }
-            .player-wrapper iframe {
-                min-height: 200px;
-            }
-            .player-header h2 {
-                font-size: 14px;
-            }
-            .player-sidebar {
-                padding: 16px;
-            }
-            .player-sidebar .video-title {
-                font-size: 16px;
+            .sidebar-section {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 480px) {
-            .video-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .video-card .info {
-                padding: 12px 14px 14px;
-            }
-            .video-card .title {
-                font-size: 12px;
-            }
-            .video-card .channel {
-                font-size: 11px;
-            }
-            .video-card .meta {
-                font-size: 11px;
-            }
-            .video-card .actions button {
-                font-size: 10px;
-                padding: 4px 10px;
-            }
-            .section-title {
-                font-size: 18px;
-            }
-            .section-actions .filter-btn {
-                font-size: 11px;
-                padding: 6px 14px;
-            }
             .header-actions .btn {
                 font-size: 11px;
-                padding: 8px 14px;
+                padding: 6px 12px;
             }
-            .header-actions .btn-outline {
-                padding: 8px 12px;
+            .video-info {
+                padding: 12px 14px;
+            }
+            .video-info .actions button {
+                font-size: 12px;
+                padding: 6px 14px;
             }
         }
     </style>
@@ -789,131 +429,97 @@
         <div class="logo" onclick="goHome()">
             <span class="icon">▶</span>
             <span>Pipe</span><span class="highlight">Flix</span>
-            <small>3.0</small>
         </div>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Pesquisar vídeos..." onkeypress="if(event.key==='Enter') searchVideos()" />
-            <button onclick="searchVideos()">🔍</button>
+        <div class="url-input-wrapper">
+            <input type="text" id="urlInput" placeholder="Cole a URL do YouTube..." onkeypress="if(event.key==='Enter') loadVideo()" />
+            <button onclick="loadVideo()">Assistir</button>
         </div>
         <div class="header-actions">
-            <button class="btn btn-outline" onclick="importSubscriptions()">📥 Importar</button>
-            <button class="btn" onclick="loginUser()" id="loginBtn">Entrar</button>
+            <button class="btn" onclick="clearHistory()">🗑️ Limpar</button>
         </div>
     </header>
 
     <!-- CONTAINER -->
     <div class="container">
-        <aside class="sidebar">
-            <div class="sidebar-section">
-                <div class="title">Menu</div>
-                <div class="sidebar-item active" onclick="setActive(this, 'feed')">
-                    <span class="icon">📺</span> Feed <span class="badge" id="feedCount">0</span>
+        <!-- PLAYER -->
+        <div class="player-section">
+            <div class="player-wrapper" id="playerWrapper">
+                <iframe id="playerIframe" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-info" id="videoInfo">
+                <div class="title" id="videoTitle">Nenhum vídeo carregado</div>
+                <div class="channel" id="videoChannel">
+                    <span class="avatar" id="channelAvatar">?</span>
+                    <span id="channelName">—</span>
                 </div>
-                <div class="sidebar-item" onclick="setActive(this, 'subscriptions')">
-                    <span class="icon">📋</span> Inscrições
-                </div>
-                <div class="sidebar-item" onclick="setActive(this, 'watchlater')">
-                    <span class="icon">⏰</span> Assistir mais tarde <span class="badge" id="wlCount">0</span>
-                </div>
-                <div class="sidebar-item" onclick="setActive(this, 'downloaded')">
-                    <span class="icon">⬇️</span> Baixados
+                <div class="actions">
+                    <button onclick="saveToWatchLater()" id="btnWatchLater">⏰ Assistir mais tarde</button>
+                    <button onclick="saveToDownloaded()" id="btnDownloaded">⬇️ Baixar</button>
+                    <button onclick="shareVideo()">📤 Compartilhar</button>
                 </div>
             </div>
-            <div class="sidebar-section">
-                <div class="title">Filtros</div>
-                <div class="sidebar-item" onclick="toggleFilter(this, 'shorts')">
-                    <span class="icon">🚫</span> Ocultar Shorts
-                </div>
-                <div class="sidebar-item" onclick="toggleFilter(this, 'watched')">
-                    <span class="icon">👁️</span> Ocultar Assistidos
-                </div>
-            </div>
-        </aside>
+        </div>
 
-        <main class="main-content">
-            <div class="section-header">
-                <h1 class="section-title" id="sectionTitle">📺 Feed</h1>
-                <div class="section-actions">
-                    <button class="filter-btn active" onclick="setFilter(this, 'all')">Todos</button>
-                    <button class="filter-btn" onclick="setFilter(this, 'recent')">Recentes</button>
-                    <button class="filter-btn" onclick="setFilter(this, 'popular')">Populares</button>
-                </div>
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <!-- Histórico -->
+            <div class="sidebar-section">
+                <div class="title">📺 Histórico</div>
+                <div id="historyList"></div>
             </div>
-            <div id="videoGrid" class="video-grid"></div>
-            <div id="loadingIndicator" class="loading" style="display:none;">
-                <div class="spinner"></div>
-                <p>Carregando vídeos incríveis...</p>
+            <!-- Assistir mais tarde -->
+            <div class="sidebar-section">
+                <div class="title">⏰ Assistir mais tarde</div>
+                <div id="watchLaterList"></div>
             </div>
-            <div id="noResults" class="no-results" style="display:none;">
-                <span class="emoji">📭</span>
-                <p>Nenhum vídeo encontrado</p>
-            </div>
-        </main>
-    </div>
-
-    <!-- PLAYER OVERLAY -->
-    <div class="player-overlay" id="playerOverlay">
-        <div class="player-container">
-            <div class="player-header">
-                <h2 id="playerTitle">Vídeo</h2>
-                <button class="close-btn" onclick="closePlayer()">✕</button>
-            </div>
-            <div class="player-body">
-                <div class="player-wrapper" id="playerWrapper">
-                    <iframe id="playerIframe" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
-                </div>
-                <div class="player-sidebar" id="playerSidebar">
-                    <div class="video-title" id="pTitle">Título</div>
-                    <div class="video-meta" id="pMeta">0 visualizações</div>
-                    <div class="channel-info">
-                        <div class="channel-avatar" id="pAvatar">📺</div>
-                        <div>
-                            <div class="channel-name" id="pChannel">Canal</div>
-                            <div class="channel-subs" id="pSubs">0 inscritos</div>
-                        </div>
-                    </div>
-                    <div class="description" id="pDesc">Descrição...</div>
-                    <div class="actions-row">
-                        <button onclick="togglePlayerLike()" id="pLikeBtn">👍 Curtir</button>
-                        <button onclick="togglePlayerSave()" id="pSaveBtn">⏰ Salvar</button>
-                        <button onclick="downloadCurrentVideo()" id="pDownloadBtn">⬇️ Baixar</button>
-                    </div>
-                </div>
+            <!-- Baixados -->
+            <div class="sidebar-section">
+                <div class="title">⬇️ Baixados</div>
+                <div id="downloadedList"></div>
             </div>
         </div>
     </div>
 
     <script>
         // ================================================================
-        //  PIPEFLIX 3.0 – USANDO A PIPED API (INNERTUBE)
-        //  https://pipedapi.kavin.rocks
-        //  TOTALMENTE GRATUITA, SEM LIMITES E SEM CHAVE
+        //  PIPEFLIX PLAYER – ASSISTA VIA URL
         // ================================================================
 
-        // ===== API PIPED (INNERTUBE) =====
-        const PIPED_API = 'https://pipedapi.snopyta.org';
-
-        // ===== ESTADO GLOBAL =====
+        // ===== ESTADO =====
         let state = {
-            user: null,
-            subscriptions: [],
-            feed: [],
-            watchLater: [],
-            downloaded: [],
-            viewed: [],
             currentVideoId: null,
-            currentView: 'feed',
-            isLoading: false
+            currentData: null, // { title, channel, thumbnail, videoId }
+            history: [], // array de { videoId, title, channel, thumbnail }
+            watchLater: [], // array de videoId
+            downloaded: [] // array de videoId
         };
 
-        // ===== CONFIG =====
-        const CONFIG = {
-            filters: { hideShorts: false, hideWatched: false },
-            currentFilter: 'all'
-        };
+        // ===== CARREGAR DADOS DO LOCALSTORAGE =====
+        function loadState() {
+            try {
+                const raw = localStorage.getItem('pipeflix_player_data');
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    state.history = data.history || [];
+                    state.watchLater = data.watchLater || [];
+                    state.downloaded = data.downloaded || [];
+                }
+            } catch (_) {}
+            renderSidebars();
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('pipeflix_player_data', JSON.stringify({
+                    history: state.history,
+                    watchLater: state.watchLater,
+                    downloaded: state.downloaded
+                }));
+            } catch (_) {}
+        }
 
         // ===== TOAST =====
-        function showToast(msg, duration = 3500) {
+        function showToast(msg, duration = 3000) {
             const el = document.getElementById('toast');
             el.textContent = msg;
             el.classList.add('show');
@@ -921,566 +527,373 @@
             el._timeout = setTimeout(() => el.classList.remove('show'), duration);
         }
 
-        // ===== LOCAL STORAGE =====
-        function loadData() {
+        // ===== EXTRAIR ID DO YOUTUBE =====
+        function extractVideoId(url) {
+            if (!url) return null;
+            // Exemplos:
+            // https://www.youtube.com/watch?v=abc123
+            // https://youtu.be/abc123
+            // https://www.youtube.com/embed/abc123
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+                /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/
+            ];
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match) return match[1];
+            }
+            return null;
+        }
+
+        // ===== CARREGAR VÍDEO =====
+        async function loadVideo(url) {
+            const input = document.getElementById('urlInput');
+            const videoUrl = url || input.value.trim();
+            if (!videoUrl) {
+                showToast('Digite ou cole uma URL do YouTube');
+                return;
+            }
+
+            const videoId = extractVideoId(videoUrl);
+            if (!videoId) {
+                showToast('❌ URL inválida. Use um link do YouTube.');
+                return;
+            }
+
+            // Atualiza o player
+            const iframe = document.getElementById('playerIframe');
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0&controls=1&enablejsapi=1`;
+
+            state.currentVideoId = videoId;
+
+            // Buscar informações via oEmbed
             try {
-                const raw = localStorage.getItem('pipeflix_data');
-                if (raw) {
-                    const data = JSON.parse(raw);
-                    state.subscriptions = data.subscriptions || [];
-                    state.watchLater = data.watchLater || [];
-                    state.downloaded = data.downloaded || [];
-                    state.viewed = data.viewed || [];
-                    if (data.user) state.user = data.user;
-                    updateUI();
+                const oembedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+                const response = await fetch(oembedUrl);
+                if (response.ok) {
+                    const data = await response.json();
+                    state.currentData = {
+                        videoId: videoId,
+                        title: data.title || 'Sem título',
+                        channel: data.author_name || 'Desconhecido',
+                        thumbnail: data.thumbnail_url || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                    };
+                    updateVideoInfo(state.currentData);
+
+                    // Adiciona ao histórico
+                    addToHistory(state.currentData);
+                } else {
+                    // Fallback: dados mínimos
+                    state.currentData = {
+                        videoId: videoId,
+                        title: 'Vídeo do YouTube',
+                        channel: 'Canal',
+                        thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                    };
+                    updateVideoInfo(state.currentData);
+                    addToHistory(state.currentData);
                 }
-            } catch (_) {}
+            } catch (_) {
+                state.currentData = {
+                    videoId: videoId,
+                    title: 'Vídeo do YouTube',
+                    channel: 'Canal',
+                    thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                };
+                updateVideoInfo(state.currentData);
+                addToHistory(state.currentData);
+            }
+
+            // Limpar campo
+            input.value = '';
         }
 
-        function saveData() {
-            try {
-                localStorage.setItem('pipeflix_data', JSON.stringify({
-                    user: state.user,
-                    subscriptions: state.subscriptions,
-                    watchLater: state.watchLater,
-                    downloaded: state.downloaded,
-                    viewed: state.viewed
-                }));
-            } catch (_) {}
+        // ===== ATUALIZAR INFORMAÇÕES DO VÍDEO =====
+        function updateVideoInfo(data) {
+            document.getElementById('videoTitle').textContent = data.title;
+            document.getElementById('channelName').textContent = data.channel;
+            document.getElementById('channelAvatar').textContent = data.channel.charAt(0).toUpperCase();
+
+            // Atualizar botões de estado
+            const isWatchLater = state.watchLater.includes(data.videoId);
+            const btnWL = document.getElementById('btnWatchLater');
+            btnWL.textContent = isWatchLater ? '⏰ Salvo' : '⏰ Assistir mais tarde';
+            btnWL.className = isWatchLater ? 'active' : '';
+
+            const isDownloaded = state.downloaded.includes(data.videoId);
+            const btnD = document.getElementById('btnDownloaded');
+            btnD.textContent = isDownloaded ? '⬇️ Baixado' : '⬇️ Baixar';
+            btnD.className = isDownloaded ? 'active' : '';
         }
 
-        // ===== USUÁRIO =====
-        function loginUser() {
-            if (state.user) {
-                state.user = null;
-                document.getElementById('loginBtn').textContent = 'Entrar';
-                saveData();
-                showToast('Desconectado');
+        // ===== HISTÓRICO =====
+        function addToHistory(data) {
+            // Remove se já existir
+            state.history = state.history.filter(item => item.videoId !== data.videoId);
+            state.history.unshift(data); // adiciona no topo
+            // Limita a 50 itens
+            if (state.history.length > 50) state.history.pop();
+            saveState();
+            renderSidebars();
+        }
+
+        function clearHistory() {
+            if (state.history.length === 0) {
+                showToast('Histórico já está vazio');
                 return;
             }
-            const name = prompt('Digite seu nome:');
-            if (name && name.trim()) {
-                state.user = { name: name.trim(), id: Date.now().toString(36) };
-                document.getElementById('loginBtn').textContent = state.user.name;
-                saveData();
-                showToast('👋 Bem-vindo, ' + state.user.name + '!');
+            if (confirm('Tem certeza que deseja limpar todo o histórico?')) {
+                state.history = [];
+                saveState();
+                renderSidebars();
+                showToast('🗑️ Histórico limpo');
             }
         }
 
-        // ===== FILTROS =====
-        function toggleFilter(el, filter) {
-            el.classList.toggle('active');
-            if (filter === 'shorts') CONFIG.filters.hideShorts = !CONFIG.filters.hideShorts;
-            if (filter === 'watched') CONFIG.filters.hideWatched = !CONFIG.filters.hideWatched;
-            renderFeed();
-        }
-
-        function setFilter(el, filter) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            CONFIG.currentFilter = filter;
-            renderFeed();
-        }
-
-        // ===== SIDEBAR =====
-        function setActive(el, view) {
-            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            state.currentView = view;
-            const titles = {
-                feed: '📺 Feed',
-                subscriptions: '📋 Inscrições',
-                watchlater: '⏰ Assistir mais tarde',
-                downloaded: '⬇️ Baixados'
-            };
-            document.getElementById('sectionTitle').textContent = titles[view] || '📺 Feed';
-
-            if (view === 'feed') loadFeed();
-            else if (view === 'subscriptions') renderSubscriptions();
-            else if (view === 'watchlater') renderWatchLater();
-            else if (view === 'downloaded') renderDownloaded();
-        }
-
-        function goHome() {
-            const first = document.querySelector('.sidebar-item');
-            if (first) setActive(first, 'feed');
-        }
-
-        // ===== BUSCAR VÍDEOS COM PIPED API (INNERTUBE) =====
-        async function loadFeed(query = '') {
-            if (state.isLoading) return;
-            state.isLoading = true;
-
-            document.getElementById('loadingIndicator').style.display = 'block';
-            document.getElementById('videoGrid').innerHTML = '';
-            document.getElementById('noResults').style.display = 'none';
-
-            const searchQuery = query || 'programação';
-
-            try {
-                // Endpoint de busca do Piped
-                const url = `${PIPED_API}/search?q=${encodeURIComponent(searchQuery)}&filter=videos`;
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-                const data = await response.json();
-
-                // A Piped retorna { items: [...] }
-                const results = data.items || [];
-
-                if (!results || results.length === 0) {
-                    document.getElementById('noResults').style.display = 'block';
-                    document.getElementById('loadingIndicator').style.display = 'none';
-                    state.isLoading = false;
-                    return;
-                }
-
-                // Mapear os resultados para nosso formato
-                state.feed = results.map(v => ({
-                    id: v.url ? v.url.split('watch?v=')[1] : v.videoId,
-                    title: v.title || 'Sem título',
-                    channel: v.uploaderName || v.author || 'Desconhecido',
-                    channelId: v.uploaderUrl ? v.uploaderUrl.split('/channel/')[1] || '' : '',
-                    thumb: v.thumbnail || `https://img.youtube.com/vi/${v.videoId || v.url}/hqdefault.jpg`,
-                    views: v.views || v.viewCount || 0,
-                    duration: v.duration || 0,
-                    published: v.uploadedDate ? new Date(v.uploadedDate).getTime() / 1000 : Date.now() / 1000,
-                    isShort: (v.duration && v.duration < 60) || false,
-                    watched: state.viewed.includes(v.videoId || v.url),
-                    description: v.description || ''
-                }));
-
-                document.getElementById('feedCount').textContent = state.feed.length;
-                renderFeed();
-                showToast(`✅ ${state.feed.length} vídeos carregados via InnerTube (Piped)`);
-
-            } catch (err) {
-                console.warn('Erro ao buscar via Piped:', err);
-                showToast('⚠️ Erro na API, usando fallback');
-                loadFallbackFeed();
-            }
-
-            document.getElementById('loadingIndicator').style.display = 'none';
-            state.isLoading = false;
-        }
-
-        // ===== FALLBACK (vídeos reais do YouTube) =====
-        function loadFallbackFeed() {
-            state.feed = [{
-                id: 'dQw4w9WgXcQ',
-                title: 'Never Gonna Give You Up (Official Music Video)',
-                channel: 'Rick Astley',
-                channelId: 'UCJtUOos_MwL_EfR6LJjYJvg',
-                thumb: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-                views: 1300000000,
-                duration: 213,
-                published: Date.now() / 1000 - 86400 * 365 * 12,
-                isShort: false,
-                watched: false,
-                description: 'Rick Astley - Never Gonna Give You Up (Official Music Video)'
-            }, {
-                id: '9bZkp7q19f0',
-                title: 'PSY - GANGNAM STYLE (강남스타일) MV',
-                channel: 'PSY',
-                channelId: 'UCBuS4EwM4E2Mh9k0V8l0xHQ',
-                thumb: 'https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg',
-                views: 4800000000,
-                duration: 252,
-                published: Date.now() / 1000 - 86400 * 365 * 11,
-                isShort: false,
-                watched: false,
-                description: 'PSY - GANGNAM STYLE'
-            }, {
-                id: 'kJQP7kiw5Fk',
-                title: 'Luis Fonsi - Despacito ft. Daddy Yankee',
-                channel: 'Luis Fonsi',
-                channelId: 'UC5XhJfH8t4zFwZkFv-nXAKQ',
-                thumb: 'https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg',
-                views: 8200000000,
-                duration: 281,
-                published: Date.now() / 1000 - 86400 * 365 * 7,
-                isShort: false,
-                watched: false,
-                description: 'Luis Fonsi - Despacito ft. Daddy Yankee'
-            }, {
-                id: 'CevxZvSJLk8',
-                title: 'Alan Walker - Faded (Official Music Video)',
-                channel: 'Alan Walker',
-                channelId: 'UCJrOtniJ0-NWz37R6u8ZpFA',
-                thumb: 'https://img.youtube.com/vi/CevxZvSJLk8/hqdefault.jpg',
-                views: 3400000000,
-                duration: 212,
-                published: Date.now() / 1000 - 86400 * 365 * 8,
-                isShort: false,
-                watched: false,
-                description: 'Alan Walker - Faded'
-            }, {
-                id: 'wJ9OUXG8hUE',
-                title: 'C418 - Sweden (Minecraft Soundtrack)',
-                channel: 'C418',
-                channelId: 'UC5p7t5t8t5t8t5t8t5t8t5t8',
-                thumb: 'https://img.youtube.com/vi/wJ9OUXG8hUE/hqdefault.jpg',
-                views: 50000000,
-                duration: 232,
-                published: Date.now() / 1000 - 86400 * 365 * 13,
-                isShort: false,
-                watched: false,
-                description: 'C418 - Sweden'
-            }];
-            document.getElementById('feedCount').textContent = state.feed.length;
-            renderFeed();
-            showToast('📡 Modo offline (vídeos de exemplo)');
-        }
-
-        // ===== RENDER =====
-        function renderFeed() {
-            const grid = document.getElementById('videoGrid');
-            let videos = [...state.feed];
-
-            if (CONFIG.filters.hideShorts) videos = videos.filter(v => !v.isShort);
-            if (CONFIG.filters.hideWatched) videos = videos.filter(v => !v.watched);
-
-            if (CONFIG.currentFilter === 'recent') {
-                videos.sort((a, b) => b.published - a.published);
-            } else if (CONFIG.currentFilter === 'popular') {
-                videos.sort((a, b) => b.views - a.views);
-            }
-
-            if (videos.length === 0) {
-                document.getElementById('noResults').style.display = 'block';
-                grid.innerHTML = '';
-                return;
-            }
-            document.getElementById('noResults').style.display = 'none';
-
-            const isSubscribed = (id) => state.subscriptions.some(s => s.id === id);
-            const isSaved = (id) => state.watchLater.includes(id);
-            const isDownloaded = (id) => state.downloaded.includes(id);
-
-            grid.innerHTML = videos.map(v => `
-                <div class="video-card" onclick="playVideo('${v.id}')">
-                    <div class="thumbnail">
-                        <img src="${v.thumb}" alt="${v.title}" loading="lazy" onerror="this.src='https://img.youtube.com/vi/${v.id}/hqdefault.jpg'">
-                        <div class="duration">${formatDuration(v.duration)}</div>
-                        ${v.isShort ? '<div class="shorts-badge">#Shorts</div>' : ''}
-                    </div>
-                    <div class="info">
-                        <div class="title">${v.title}</div>
-                        <div class="channel">${v.channel}</div>
-                        <div class="meta">
-                            <span>${formatViews(v.views)}</span>
-                            <span class="dot">•</span>
-                            <span>${formatDate(v.published)}</span>
-                            ${v.watched ? '<span style="color:#444;">• 👁️</span>' : ''}
-                        </div>
-                        <div class="actions">
-                            <button onclick="event.stopPropagation();toggleSubscribe('${v.channelId}','${v.channel}')" 
-                                    class="${isSubscribed(v.channelId) ? 'subscribed' : ''}">
-                                ${isSubscribed(v.channelId) ? '✅' : '➕'} Inscrever
-                            </button>
-                            <button onclick="event.stopPropagation();toggleSave('${v.id}')" 
-                                    class="${isSaved(v.id) ? 'saved' : ''}">
-                                ${isSaved(v.id) ? '⏰ Salvo' : '⏰ Salvar'}
-                            </button>
-                            <button onclick="event.stopPropagation();downloadVideo('${v.id}')">
-                                ${isDownloaded(v.id) ? '⬇️ Baixado' : '⬇️'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            document.getElementById('wlCount').textContent = state.watchLater.length;
-        }
-
-        // ===== INSCRIÇÕES =====
-        function toggleSubscribe(channelId, channelName) {
-            if (!state.user) { showToast('Faça login para se inscrever'); return; }
-            if (!channelId) { showToast('ID do canal inválido'); return; }
-            const idx = state.subscriptions.findIndex(s => s.id === channelId);
-            if (idx > -1) {
-                state.subscriptions.splice(idx, 1);
-                showToast('Inscrição cancelada: ' + channelName);
-            } else {
-                state.subscriptions.push({ id: channelId, name: channelName, avatar: channelName.charAt(0).toUpperCase() });
-                showToast('✅ Inscrito em: ' + channelName);
-            }
-            saveData();
-            renderFeed();
-        }
-
-        function renderSubscriptions() {
-            const grid = document.getElementById('videoGrid');
-            if (!state.subscriptions.length) {
-                grid.innerHTML =
-                    `<div class="no-results"><span class="emoji">📋</span><p>Nenhuma inscrição. Pesquise e inscreva-se!</p></div>`;
-                return;
-            }
-            grid.innerHTML = state.subscriptions.map(s => `
-                <div class="video-card" style="padding:20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:#0e0e0e;">
-                    <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#ff2d55,#ff0a0a);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;flex-shrink:0;color:#fff;">${s.avatar}</div>
-                    <div style="flex:1;">
-                        <div style="font-weight:600;font-size:17px;color:#f0f0f0;">${s.name}</div>
-                        <div style="font-size:13px;color:#555;">ID: ${s.id}</div>
-                    </div>
-                    <button onclick="unsubscribeChannel('${s.id}')" style="padding:8px 20px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:30px;color:#ff2d55;cursor:pointer;font-weight:500;transition:all 0.3s;font-family:Inter,sans-serif;">Cancelar</button>
-                </div>
-            `).join('');
-        }
-
-        function unsubscribeChannel(channelId) {
-            state.subscriptions = state.subscriptions.filter(s => s.id !== channelId);
-            saveData();
-            renderSubscriptions();
-            showToast('Inscrição removida');
+        function removeFromHistory(videoId) {
+            state.history = state.history.filter(item => item.videoId !== videoId);
+            saveState();
+            renderSidebars();
+            showToast('Removido do histórico');
         }
 
         // ===== ASSISTIR MAIS TARDE =====
-        function toggleSave(videoId) {
-            if (!state.user) { showToast('Faça login para salvar'); return; }
-            const idx = state.watchLater.indexOf(videoId);
+        function saveToWatchLater() {
+            if (!state.currentData) {
+                showToast('Carregue um vídeo primeiro');
+                return;
+            }
+            const id = state.currentData.videoId;
+            const idx = state.watchLater.indexOf(id);
             if (idx > -1) {
                 state.watchLater.splice(idx, 1);
                 showToast('Removido de "Assistir mais tarde"');
             } else {
-                state.watchLater.push(videoId);
-                showToast('⏰ Salvo em "Assistir mais tarde"');
+                state.watchLater.push(id);
+                showToast('⏰ Adicionado a "Assistir mais tarde"');
             }
-            saveData();
-            renderFeed();
-            document.getElementById('wlCount').textContent = state.watchLater.length;
+            saveState();
+            renderSidebars();
+            updateVideoInfo(state.currentData);
         }
 
-        function renderWatchLater() {
-            const grid = document.getElementById('videoGrid');
-            const saved = state.feed.filter(v => state.watchLater.includes(v.id));
-            if (!saved.length) {
-                grid.innerHTML =
-                    `<div class="no-results"><span class="emoji">⏰</span><p>Nenhum vídeo salvo para assistir mais tarde</p></div>`;
+        function removeWatchLater(videoId) {
+            state.watchLater = state.watchLater.filter(id => id !== videoId);
+            saveState();
+            renderSidebars();
+            if (state.currentData && state.currentData.videoId === videoId) {
+                updateVideoInfo(state.currentData);
+            }
+            showToast('Removido de "Assistir mais tarde"');
+        }
+
+        // ===== BAIXADOS =====
+        function saveToDownloaded() {
+            if (!state.currentData) {
+                showToast('Carregue um vídeo primeiro');
                 return;
             }
-            grid.innerHTML = saved.map(v => `
-                <div class="video-card" onclick="playVideo('${v.id}')">
-                    <div class="thumbnail">
-                        <img src="${v.thumb}" alt="${v.title}">
-                        <div class="duration">${formatDuration(v.duration)}</div>
-                    </div>
-                    <div class="info">
-                        <div class="title">${v.title}</div>
-                        <div class="channel">${v.channel}</div>
-                        <div class="meta">${formatViews(v.views)} visualizações</div>
-                        <div class="actions">
-                            <button onclick="event.stopPropagation();toggleSave('${v.id}')" style="color:#ff2d55;">⏰ Remover</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // ===== DOWNLOAD =====
-        function downloadVideo(videoId) {
-            if (!state.user) { showToast('Faça login para baixar'); return; }
-            const idx = state.downloaded.indexOf(videoId);
+            const id = state.currentData.videoId;
+            const idx = state.downloaded.indexOf(id);
             if (idx > -1) {
                 state.downloaded.splice(idx, 1);
                 showToast('Download removido');
             } else {
-                state.downloaded.push(videoId);
-                showToast('⬇️ Vídeo baixado (offline)');
+                state.downloaded.push(id);
+                showToast('⬇️ Vídeo marcado como baixado');
             }
-            saveData();
-            renderFeed();
+            saveState();
+            renderSidebars();
+            updateVideoInfo(state.currentData);
         }
 
-        function downloadCurrentVideo() {
-            if (state.currentVideoId) {
-                downloadVideo(state.currentVideoId);
-                const isDownloaded = state.downloaded.includes(state.currentVideoId);
-                document.getElementById('pDownloadBtn').textContent = isDownloaded ? '⬇️ Baixado' : '⬇️ Baixar';
+        function removeDownloaded(videoId) {
+            state.downloaded = state.downloaded.filter(id => id !== videoId);
+            saveState();
+            renderSidebars();
+            if (state.currentData && state.currentData.videoId === videoId) {
+                updateVideoInfo(state.currentData);
             }
+            showToast('Removido da lista de baixados');
         }
 
-        function renderDownloaded() {
-            const grid = document.getElementById('videoGrid');
-            const downloaded = state.feed.filter(v => state.downloaded.includes(v.id));
-            if (!downloaded.length) {
-                grid.innerHTML =
-                    `<div class="no-results"><span class="emoji">⬇️</span><p>Nenhum vídeo baixado</p></div>`;
+        // ===== COMPARTILHAR =====
+        function shareVideo() {
+            if (!state.currentVideoId) {
+                showToast('Nenhum vídeo carregado');
                 return;
             }
-            grid.innerHTML = downloaded.map(v => `
-                <div class="video-card" onclick="playVideo('${v.id}')">
-                    <div class="thumbnail">
-                        <img src="${v.thumb}" alt="${v.title}">
-                        <div class="duration">${formatDuration(v.duration)}</div>
-                        <div style="position:absolute;top:12px;left:12px;background:rgba(0,255,100,0.15);color:#00ff88;font-size:10px;font-weight:700;padding:4px 14px;border-radius:30px;border:1px solid rgba(0,255,100,0.2);">⬇️ OFFLINE</div>
-                    </div>
+            const url = `https://www.youtube.com/watch?v=${state.currentVideoId}`;
+            if (navigator.share) {
+                navigator.share({ title: state.currentData?.title || 'Vídeo', url: url })
+                    .catch(() => {});
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('📤 Link copiado para a área de transferência!');
+                }).catch(() => {
+                    // fallback
+                    prompt('Copie o link:', url);
+                });
+            }
+        }
+
+        // ===== RENDERIZAR SIDEBARS =====
+        function renderSidebars() {
+            renderHistory();
+            renderWatchLaterList();
+            renderDownloadedList();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            if (state.history.length === 0) {
+                container.innerHTML = '<div class="empty-state">Nenhum vídeo assistido</div>';
+                return;
+            }
+            container.innerHTML = state.history.map(item => `
+                <div class="history-item" onclick="playFromHistory('${item.videoId}')">
+                    <img src="${item.thumbnail}" alt="${item.title}" loading="lazy" />
                     <div class="info">
-                        <div class="title">${v.title}</div>
-                        <div class="channel">${v.channel}</div>
+                        <div class="h-title">${item.title}</div>
+                        <div class="h-channel">${item.channel}</div>
                     </div>
+                    <button class="remove" onclick="event.stopPropagation();removeFromHistory('${item.videoId}')">✕</button>
                 </div>
             `).join('');
         }
 
-        // ===== IMPORTAÇÃO =====
-        function importSubscriptions() {
-            const text = prompt('Cole os IDs dos canais (separados por vírgula):');
-            if (!text) return;
-            const ids = text.split(',').map(s => s.trim()).filter(Boolean);
-            let count = 0;
-            ids.forEach(id => {
-                if (!state.subscriptions.some(s => s.id === id)) {
-                    state.subscriptions.push({ id, name: 'Canal ' + id, avatar: id.charAt(0).toUpperCase() });
-                    count++;
-                }
-            });
-            saveData();
-            showToast(`✅ ${count} inscrições importadas!`);
-            renderSubscriptions();
+        function renderWatchLaterList() {
+            const container = document.getElementById('watchLaterList');
+            const items = state.history.filter(item => state.watchLater.includes(item.videoId));
+            if (items.length === 0) {
+                container.innerHTML = '<div class="empty-state">Nenhum vídeo salvo</div>';
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <div class="history-item" onclick="playFromHistory('${item.videoId}')">
+                    <img src="${item.thumbnail}" alt="${item.title}" loading="lazy" />
+                    <div class="info">
+                        <div class="h-title">${item.title}</div>
+                        <div class="h-channel">${item.channel}</div>
+                    </div>
+                    <button class="remove" onclick="event.stopPropagation();removeWatchLater('${item.videoId}')">✕</button>
+                </div>
+            `).join('');
         }
 
-        // ===== PLAYER =====
-        function playVideo(videoId) {
+        function renderDownloadedList() {
+            const container = document.getElementById('downloadedList');
+            const items = state.history.filter(item => state.downloaded.includes(item.videoId));
+            if (items.length === 0) {
+                container.innerHTML = '<div class="empty-state">Nenhum vídeo baixado</div>';
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <div class="history-item" onclick="playFromHistory('${item.videoId}')">
+                    <img src="${item.thumbnail}" alt="${item.title}" loading="lazy" />
+                    <div class="info">
+                        <div class="h-title">${item.title}</div>
+                        <div class="h-channel">${item.channel}</div>
+                    </div>
+                    <button class="remove" onclick="event.stopPropagation();removeDownloaded('${item.videoId}')">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function playFromHistory(videoId) {
+            // Carrega o vídeo sem precisar de URL
+            const iframe = document.getElementById('playerIframe');
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0&controls=1&enablejsapi=1`;
             state.currentVideoId = videoId;
-            document.getElementById('playerOverlay').classList.add('active');
-            document.getElementById('playerTitle').textContent = 'Carregando...';
 
-            // Buscar detalhes do vídeo via Piped
-            fetchVideoDetails(videoId);
-
-            // Configura o iframe
-            const iframe = document.getElementById('playerIframe');
-            const embedUrl =
-                `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0&controls=1&enablejsapi=1`;
-            iframe.src = embedUrl;
-        }
-
-        async function fetchVideoDetails(videoId) {
-            try {
-                const url = `${PIPED_API}/streams/${videoId}`;
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                const data = await response.json();
-
-                if (data) {
-                    document.getElementById('playerTitle').textContent = data.title || 'Vídeo';
-                    document.getElementById('pTitle').textContent = data.title || 'Título';
-                    document.getElementById('pMeta').textContent = (data.views ? formatViews(data.views) : '0') +
-                        ' visualizações';
-                    document.getElementById('pChannel').textContent = data.uploader || 'Canal';
-                    document.getElementById('pSubs').textContent = data.uploaderSubscriberCount ? formatViews(data
-                        .uploaderSubscriberCount) + ' inscritos' : '';
-                    document.getElementById('pDesc').textContent = data.description || 'Sem descrição';
-                    document.getElementById('pAvatar').textContent = (data.uploader || 'C').charAt(0).toUpperCase();
-                }
-            } catch (_) {
-                // silencioso
-            }
-            updatePlayerButtons(videoId);
-        }
-
-        function updatePlayerButtons(videoId) {
-            const isLiked = state.viewed.includes(videoId);
-            document.getElementById('pLikeBtn').textContent = isLiked ? '❤️ Curtido' : '👍 Curtir';
-            document.getElementById('pLikeBtn').className = isLiked ? 'liked' : '';
-
-            const isSaved = state.watchLater.includes(videoId);
-            document.getElementById('pSaveBtn').textContent = isSaved ? '⏰ Salvo' : '⏰ Salvar';
-            document.getElementById('pSaveBtn').className = isSaved ? 'saved' : '';
-
-            const isDownloaded = state.downloaded.includes(videoId);
-            document.getElementById('pDownloadBtn').textContent = isDownloaded ? '⬇️ Baixado' : '⬇️ Baixar';
-
-            // Marcar como assistido
-            if (!state.viewed.includes(videoId)) {
-                state.viewed.push(videoId);
-                const v = state.feed.find(f => f.id === videoId);
-                if (v) v.watched = true;
-                saveData();
-                renderFeed();
-            }
-        }
-
-        function closePlayer() {
-            document.getElementById('playerOverlay').classList.remove('active');
-            const iframe = document.getElementById('playerIframe');
-            if (iframe) iframe.src = '';
-            state.currentVideoId = null;
-        }
-
-        function togglePlayerLike() {
-            if (!state.user) { showToast('Faça login para curtir'); return; }
-            const btn = document.getElementById('pLikeBtn');
-            const isLiked = btn.classList.contains('liked');
-            if (isLiked) {
-                btn.classList.remove('liked');
-                btn.textContent = '👍 Curtir';
-                showToast('Curtida removida');
+            // Buscar dados do histórico ou do oEmbed
+            const item = state.history.find(h => h.videoId === videoId);
+            if (item) {
+                state.currentData = item;
+                updateVideoInfo(item);
+                // Re-adiciona ao topo do histórico (move)
+                state.history = state.history.filter(h => h.videoId !== videoId);
+                state.history.unshift(item);
+                saveState();
+                renderSidebars();
             } else {
-                btn.classList.add('liked');
-                btn.textContent = '❤️ Curtido';
-                showToast('👍 Curtido!');
+                // Fallback: busca oEmbed
+                fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const newData = {
+                            videoId: videoId,
+                            title: data.title || 'Vídeo',
+                            channel: data.author_name || 'Canal',
+                            thumbnail: data.thumbnail_url || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                        };
+                        state.currentData = newData;
+                        updateVideoInfo(newData);
+                        addToHistory(newData);
+                    })
+                    .catch(() => {
+                        // dados mínimos
+                        const fallbackData = {
+                            videoId: videoId,
+                            title: 'Vídeo do YouTube',
+                            channel: 'Canal',
+                            thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                        };
+                        state.currentData = fallbackData;
+                        updateVideoInfo(fallbackData);
+                        addToHistory(fallbackData);
+                    });
             }
+            document.getElementById('urlInput').value = '';
         }
 
-        function togglePlayerSave() {
-            if (state.currentVideoId) toggleSave(state.currentVideoId);
-            const isSaved = state.watchLater.includes(state.currentVideoId);
-            const btn = document.getElementById('pSaveBtn');
-            btn.textContent = isSaved ? '⏰ Salvo' : '⏰ Salvar';
-            btn.className = isSaved ? 'saved' : '';
+        // ===== GO HOME (limpa player) =====
+        function goHome() {
+            const iframe = document.getElementById('playerIframe');
+            iframe.src = '';
+            state.currentVideoId = null;
+            state.currentData = null;
+            document.getElementById('videoTitle').textContent = 'Nenhum vídeo carregado';
+            document.getElementById('channelName').textContent = '—';
+            document.getElementById('channelAvatar').textContent = '?';
+            document.getElementById('btnWatchLater').textContent = '⏰ Assistir mais tarde';
+            document.getElementById('btnWatchLater').className = '';
+            document.getElementById('btnDownloaded').textContent = '⬇️ Baixar';
+            document.getElementById('btnDownloaded').className = '';
+            document.getElementById('urlInput').value = '';
         }
-
-        // ===== PESQUISA =====
-        function searchVideos() {
-            const q = document.getElementById('searchInput').value.trim();
-            if (q) loadFeed(q);
-        }
-
-        // ===== UTILITÁRIOS =====
-        function formatDuration(seconds) {
-            if (!seconds || seconds < 0) return '0:00';
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = Math.floor(seconds % 60);
-            if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            return `${m}:${String(m).padStart(2, '0')}`;
-        }
-
-        function formatViews(n) {
-            if (!n) return '0';
-            if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
-            if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-            if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
-            return String(n);
-        }
-
-        function formatDate(ts) {
-            if (!ts) return 'data desconhecida';
-            const d = new Date(ts * 1000);
-            if (isNaN(d.getTime())) return 'data desconhecida';
-            const now = Date.now();
-            const diff = now - d.getTime();
-            const days = Math.floor(diff / 86400000);
-            if (days > 365) return Math.floor(days / 365) + ' ano' + (days > 365 ? 's' : '');
-            if (days > 30) return Math.floor(days / 30) + ' mês' + (days > 30 ? 'es' : '');
-            if (days > 0) return days + ' dia' + (days > 1 ? 's' : '');
-            return 'hoje';
-        }
-
-        function updateUI() {
-            document.getElementById('feedCount').textContent = state.feed.length;
-            document.getElementById('wlCount').textContent = state.watchLater.length;
-            if (state.user) document.getElementById('loginBtn').textContent = state.user.name;
-        }
-
-        // ===== EVENTOS =====
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closePlayer(); });
 
         // ===== INICIAR =====
-        loadData();
-        loadFeed();
+        loadState();
+
+        // Se houver algum vídeo no histórico, carrega o primeiro
+        if (state.history.length > 0) {
+            // Mas não autoplay, apenas deixa o player vazio.
+        }
+
+        // ===== TRATAR URL VIA PARÂMETRO ?v= =====
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const v = params.get('v');
+            if (v) {
+                // Preenche o input e carrega
+                document.getElementById('urlInput').value = `https://www.youtube.com/watch?v=${v}`;
+                loadVideo();
+            }
+        })();
+
+        // Suporte para colar URL e carregar automaticamente (opcional)
+        document.getElementById('urlInput').addEventListener('paste', function(e) {
+            // pequeno atraso para garantir que o valor foi colado
+            setTimeout(() => {
+                const val = this.value.trim();
+                if (val && extractVideoId(val)) {
+                    loadVideo(val);
+                }
+            }, 100);
+        });
+
+        console.log('🎬 PipeFlix Player carregado! Cole uma URL do YouTube e assista.');
     </script>
 </body>
 </html>
